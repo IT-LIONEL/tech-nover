@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIONEL TUTORIAL SITE </title>
+    <!-- Favicon link -->
+    <link rel="icon" href="https://pfst.cf2.poecdn.net/base/image/e9e9ba3ef3801dc0aa5bc864e460f8d9f635bbe07f336291dae0adeca4d4900c?w=1024&h=768&pmaid=322747907">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#8584E8',
+                        dark: {
+                            bg: '#181818',
+                            card: '#242424',
+                            text: '#FFFFFF'
+                        },
+                        light: {
+                            bg: '#FFFFFF',
+                            card: '#F1F1F1',
+                            text: '#333333'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .video-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .tag {
+            background-color: #5D5CDE;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 10;
+        }
+
+        .category-btn.active {
+            background-color: #5D5CDE;
+            color: white;
+        }
+
+        .dark .category-btn.active {
+            background-color: #8584E8;
+            color: white;
+        }
+
+        /* Custom scrollbar */
+        .categories-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .categories-container::-webkit-scrollbar-thumb {
+            background-color: #5D5CDE;
+            border-radius: 20px;
+        }
+
+        .dark .categories-container::-webkit-scrollbar-thumb {
+            background-color: #8584E8;
+        }
+
+        /* Loader animation */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #5D5CDE;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-20 bg-white dark:bg-dark-bg shadow-md">
+        <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-3 md:mb-0">
+                <i class="fas fa-play-circle text-primary text-3xl mr-2"></i>
+                <h1 class="text-2xl font-bold text-primary">Lionel TUTORIAL SITE</h1>
+            </div>
+            
+            <div class="w-full md:w-1/2 md:mx-4">
+                <div class="relative">
+                    <input id="search-input" type="text" placeholder="Search tutorials..." 
+                        class="w-full px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 
+                        focus:outline-none focus:ring-2 focus:ring-primary text-base
+                        bg-light-bg dark:bg-dark-card">
+                    <button id="search-btn" class="absolute right-3 top-2 text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex items-center mt-3 md:mt-0">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:inline-block"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="categories-container overflow-x-auto whitespace-nowrap pb-2 px-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="container mx-auto flex space-x-2">
+                <button class="category-btn active px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="all">All</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="web">Web Development</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="programming">Programming Languages</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="security">Cybersecurity</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="database">Database Management</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="networking">Networking</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="cloud">Cloud Computing</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="data">Data Science</button>
+                <button class="category-btn px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" data-category="mobile">Mobile Development</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-6">
+        <!-- Featured Video Section -->
+        <section id="featured-video" class="mb-8">
+            <h2 class="text-xl font-bold mb-4">Featured Tutorial</h2>
+            <div class="featured-video-container bg-light-card dark:bg-dark-card rounded-xl overflow-hidden shadow-lg">
+                <div class="relative">
+                    <img src="https://pfst.cf2.poecdn.net/base/image/e9e9ba3ef3801dc0aa5bc864e460f8d9f635bbe07f336291dae0adeca4d4900c?w=1024&h=768&pmaid=322747907" alt="Python Tutorial" class="w-full h-56 sm:h-72 md:h-96 object-cover cursor-pointer featured-thumbnail">
+                    <div class="tag">FEATURED</div>
+                    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                        <button class="play-btn bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded-full transition-colors" data-id="rfscVS0vtbw">
+                            <i class="fas fa-play mr-2"></i> Play Now
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg">WELCOME TO LIONEL TUTORIAL ZONE</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">BY ITURUSHURUKUNDO HIRWA LIONEL</p>
+                    <p class="mt-2">Welcome to Lionel Tutorial Site, your go-to destination for comprehensive tutorials and learning resources. Whether you're looking to enhance your skills or explore new topics, we have a variety of tutorials designed to help you succeed</p>
+                    <div class="flex mt-2">
+                        <span class="bg-gray-200 dark:bg-gray-700 text-xs px-2 py-1 rounded mr-2">Programming Languages</span>
+                        <span class="bg-gray-200 dark:bg-gray-700 text-xs px-2 py-1 rounded mr-2">Python</span>
+                        <span class="bg-gray-200 dark:bg-gray-700 text-xs px-2 py-1 rounded">#MostSearched</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- No Results Message -->
+        <div id="no-results" class="hidden text-center py-8">
+            <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+            <h3 class="text-xl font-medium">No videos found</h3>
+            <p class="text-gray-600 dark:text-gray-400">Try different search terms or categories</p>
+        </div>
+
+        <!-- Recommended Videos Grid -->
+        <section>
+            <h2 class="text-xl font-bold mb-4">Recommended Tutorials</h2>
+            <div id="videos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Videos will be loaded here via JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
+            </div>
+            <div class="inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl w-full">
+                <div class="bg-white dark:bg-dark-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 id="modal-title" class="text-lg leading-6 font-medium text-gray-900 dark:text-white"></h3>
+                            <div class="mt-2 w-full">
+                                <div id="modal-content" class="relative pb-[56.25%] h-0 overflow-hidden">
+                                    <div id="iframe-container" class="absolute top-0 left-0 w-full h-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button id="close-modal" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-500 text-white font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Play or Download Modal -->
+    <div id="action-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 text-center">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
+            </div>
+            <div class="inline-block align-bottom bg-white dark:bg-dark-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
+                                What would you like to do?
+                            </h3>
+                            <div class="mt-2 flex flex-col sm:flex-row justify-around">
+                                <button id="play-btn" class="mb-3 sm:mb-0 inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-3 bg-primary text-white font-medium hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm">
+                                    <i class="fas fa-play mr-2"></i> Play Video
+                                </button>
+                                <button id="download-btn" class="inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-3 bg-gray-600 text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:text-sm">
+                                    <i class="fas fa-download mr-2"></i> Download Video
+                                </button>
+                            </div>
+                            <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">
+                                Note: Download functionality simulates the experience. To actually download YouTube videos, 
+                                please use YouTube's own download feature or a third-party service.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button id="cancel-action" type="button" class="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Video database
+        const videos = [
+            {
+                id: "rfscVS0vtbw",
+                title: "Learn Python - Full Course for Beginners",
+                channel: "FreeCodeCamp",
+                views: "4.8M views",
+                thumbnail: "https://pfst.cf2.poecdn.net/base/image/201058d66a28f697b9c01314064510806a32c7122e2bd55d774e9894bf58d825?w=1024&h=768&pmaid=322758013",
+                description: "A comprehensive introduction to Python programming with hands-on examples and projects.",
+                categories: ["programming"],
+                tags: ["Python", "Beginner", "#MostSearched"]
+            },
+            {
+                id: "PkZNo7MFNFg",
+                title: "Learn JavaScript - Full Course for Beginners",
+                channel: "FreeCodeCamp",
+                views: "3.6M views",
+                thumbnail: "https://i.ytimg.com/vi/PkZNo7MFNFg/maxresdefault.jpg",
+                description: "This complete JavaScript course for beginners will give you all the basics of JavaScript programming.",
+                categories: ["programming", "web"],
+                tags: ["JavaScript", "Web Development", "#MostSearched"]
+            },
+            {
+                id: "7S_tz1z_5bA",
+                title: "MySQL Database Tutorial for Beginners",
+                channel: "Programming with Mosh",
+                views: "2.8M views",
+                thumbnail: "https://i.ytimg.com/vi/7S_tz1z_5bA/maxresdefault.jpg",
+                description: "MySQL tutorial for beginners. Learn how to create a database, tables, and run queries with MySQL.",
+                categories: ["database"],
+                tags: ["MySQL", "Database"]
+            },
+            {
+                id: "OXGznpKZ_sA",
+                title: "React Tutorial for Beginners",
+                channel: "Programming with Mosh",
+                views: "1.9M views",
+                thumbnail: "https://i.ytimg.com/vi/OXGznpKZ_sA/maxresdefault.jpg",
+                description: "Learn React in this comprehensive tutorial. We will build a complete project and master the fundamentals.",
+                categories: ["web", "programming"],
+                tags: ["React", "JavaScript", "Web Development"]
+            },
+            {
+                id: "ua-CiDNNj30",
+                title: "HTML Crash Course for Absolute Beginners",
+                channel: "Traversy Media",
+                views: "2.3M views",
+                thumbnail: "https://i.ytimg.com/vi/ua-CiDNNj30/maxresdefault.jpg",
+                description: "In this crash course I will cram as much about HTML that I can in about 1 hour.",
+                categories: ["web"],
+                tags: ["HTML", "Web Development", "Trending"]
+            },
+            {
+                id: "pQN-pnXPaVg",
+                title: "HTML Full Course - Build a Website Tutorial",
+                channel: "FreeCodeCamp",
+                views: "3.1M views",
+                thumbnail: "https://i.ytimg.com/vi/pQN-pnXPaVg/maxresdefault.jpg",
+                description: "Learn the basics of HTML5 and web development in this course for beginners.",
+                categories: ["web"],
+                tags: ["HTML", "Web Development"]
+            },
+            {
+                id: "3dHNQeBSWRo",
+                title: "Ethical Hacking Full Course - Learn Ethical Hacking",
+                channel: "Edureka",
+                views: "1.7M views",
+                thumbnail: "https://i.ytimg.com/vi/3dHNQeBSWRo/maxresdefault.jpg",
+                description: "This Edureka video on 'Ethical Hacking Full Course' will help you learn Ethical Hacking and penetration testing from scratch.",
+                categories: ["security"],
+                tags: ["Cybersecurity", "Ethical Hacking", "#MostSearched"]
+            },
+            {
+                id: "qw--VYLpxG4",
+                title: "Learn Docker in 7 Easy Steps",
+                channel: "Fireship",
+                views: "895K views",
+                thumbnail: "https://i.ytimg.com/vi/qw--VYLpxG4/maxresdefault.jpg",
+                description: "Learn the fundamentals of Docker in this quick crash course in 7 easy steps.",
+                categories: ["cloud", "programming"],
+                tags: ["Docker", "DevOps", "Trending"]
+            },
+            {
+                id: "8mRNAwrH4-A",
+                title: "Linux for Hackers (and everyone else)",
+                channel: "NetworkChuck",
+                views: "720K views",
+                thumbnail: "https://i.ytimg.com/vi/8mRNAwrH4-A/maxresdefault.jpg",
+                description: "Linux is the OS of choice for Hackers, learn the basics of the terminal and Linux command line.",
+                categories: ["security", "networking"],
+                tags: ["Linux", "Cybersecurity"]
+            },
+            {
+                id: "IPvYjXCsTg8",
+                title: "Computer Networking Course - Network Engineering",
+                channel: "freeCodeCamp.org",
+                views: "1.4M views",
+                thumbnail: "https://i.ytimg.com/vi/IPvYjXCsTg8/maxresdefault.jpg",
+                description: "This course teaches the basics of computer networking. Learn how routers and switches work along with IP addressing, the DNS system and more.",
+                categories: ["networking"],
+                tags: ["Networking", "CCNA"]
+            },
+            {
+                id: "ua6D-DYTtHE",
+                title: "Data Science Full Course - Learn Data Science in 10 Hours",
+                channel: "Edureka",
+                views: "1.2M views",
+                thumbnail: "https://i.ytimg.com/vi/ua6D-DYTtHE/maxresdefault.jpg",
+                description: "This Edureka Data Science Full Course video will help you understand and learn data science concepts from scratch.",
+                categories: ["data"],
+                tags: ["Data Science", "Python", "#MostSearched"]
+            },
+            {
+                id: "ZCKohZwGZMw",
+                title: "AWS Certified Cloud Practitioner Training",
+                channel: "freeCodeCamp.org",
+                views: "822K views",
+                thumbnail: "https://i.ytimg.com/vi/ZCKohZwGZMw/maxresdefault.jpg",
+                description: "This course will help you prepare for the AWS Certified Cloud Practitioner certification exam.",
+                categories: ["cloud"],
+                tags: ["AWS", "Cloud Computing"]
+            },
+            {
+                id: "fis26HvvDII",
+                title: "Flutter Course - Full Tutorial for Beginners",
+                channel: "freeCodeCamp.org",
+                views: "1.5M views",
+                thumbnail: "https://i.ytimg.com/vi/fis26HvvDII/maxresdefault.jpg",
+                description: "Get started with Flutter and learn how to build native mobile apps.",
+                categories: ["mobile", "programming"],
+                tags: ["Flutter", "Mobile Development", "Trending"]
+            },
+            {
+                id: "9M4XKi25I2M",
+                title: "Complete MongoDB Tutorial",
+                channel: "Net Ninja",
+                views: "534K views",
+                thumbnail: "https://i.ytimg.com/vi/9M4XKi25I2M/maxresdefault.jpg",
+                description: "In this MongoDB tutorial series, we'll be learning all about the popular NoSQL database.",
+                categories: ["database"],
+                tags: ["MongoDB", "NoSQL"]
+            },
+            {
+                id: "cYMCLz5PzpY",
+                title: "Kotlin Course - Tutorial for Beginners",
+                channel: "freeCodeCamp.org",
+                views: "675K views",
+                thumbnail: "https://i.ytimg.com/vi/cYMCLz5PzpY/maxresdefault.jpg",
+                description: "Learn the Kotlin programming language in this complete course for beginners.",
+                categories: ["programming", "mobile"],
+                tags: ["Kotlin", "Android Development"]
+            }
+        ];
+
+        // DOM Elements
+        const videosGrid = document.getElementById('videos-grid');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const videoModal = document.getElementById('video-modal');
+        const actionModal = document.getElementById('action-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const iframeContainer = document.getElementById('iframe-container');
+        const closeModalBtn = document.getElementById('close-modal');
+        const playBtn = document.getElementById('play-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const cancelActionBtn = document.getElementById('cancel-action');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const noResults = document.getElementById('no-results');
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // Variables to store current state
+        let currentVideoId = null;
+        let filteredVideos = [...videos];
+        let activeCategory = 'all';
+        let searchTerm = '';
+
+        // Dark mode initialization
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Render videos to the grid
+        function renderVideos() {
+            // Clear the grid
+            videosGrid.innerHTML = '';
+            
+            if (filteredVideos.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                
+                // Render each video
+                filteredVideos.forEach(video => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'video-card bg-light-card dark:bg-dark-card rounded-lg overflow-hidden shadow transition-all';
+                    
+                    const trendingTag = video.tags.some(tag => tag === "Trending" || tag === "#MostSearched") ? 
+                        `<div class="tag">${video.tags.find(tag => tag === "Trending" || tag === "#MostSearched")}</div>` : '';
+                    
+                    videoCard.innerHTML = `
+                        <div class="relative">
+                            <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-48 object-cover cursor-pointer">
+                            ${trendingTag}
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                <button class="play-btn bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded-full transition-colors" data-id="${video.id}">
+                                    <i class="fas fa-play mr-2"></i> Play Now
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-medium line-clamp-2 h-12">${video.title}</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">${video.channel} • ${video.views}</p>
+                            <div class="flex flex-wrap mt-2 gap-1">
+                                ${video.tags.map(tag => 
+                                    `<span class="bg-gray-200 dark:bg-gray-700 text-xs px-2 py-1 rounded">${tag}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add click event to thumbnail
+                    const thumbnail = videoCard.querySelector('img');
+                    thumbnail.addEventListener('click', () => {
+                        showActionModal(video.id, video.title);
+                    });
+                    
+                    // Add click event to play button
+                    const button = videoCard.querySelector('.play-btn');
+                    button.addEventListener('click', () => {
+                        playVideo(video.id, video.title);
+                    });
+                    
+                    videosGrid.appendChild(videoCard);
+                });
+            }
+        }
+
+        // Filter videos based on search term and category
+        function filterVideos() {
+            if (activeCategory === 'all' && searchTerm === '') {
+                filteredVideos = [...videos];
+            } else {
+                filteredVideos = videos.filter(video => {
+                    const matchesCategory = activeCategory === 'all' || video.categories.includes(activeCategory);
+                    const matchesSearch = searchTerm === '' || 
+                        video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        video.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        video.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                    
+                    return matchesCategory && matchesSearch;
+                });
+            }
+            
+            renderVideos();
+        }
+
+        // Show action modal (play or download)
+        function showActionModal(videoId, videoTitle) {
+            currentVideoId = videoId;
+            modalTitle.textContent = videoTitle;
+            actionModal.classList.remove('hidden');
+        }
+
+        // Play video in modal
+        function playVideo(videoId, videoTitle) {
+            modalTitle.textContent = videoTitle;
+            
+            // Create iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            iframe.className = "absolute top-0 left-0 w-full h-full";
+            
+            // Clear previous content and append iframe
+            iframeContainer.innerHTML = '';
+            iframeContainer.appendChild(iframe);
+            
+            // Hide action modal and show video modal
+            actionModal.classList.add('hidden');
+            videoModal.classList.remove('hidden');
+        }
+
+        // Simulate download (not actually downloading)
+        function simulateDownload(videoId) {
+            // Show download simulation message
+            actionModal.classList.add('hidden');
+            
+            // Create a simulated download notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-white dark:bg-dark-card shadow-lg rounded-lg p-4 z-50 flex items-center';
+            notification.innerHTML = `
+                <div class="mr-4">
+                    <div class="loader"></div>
+                </div>
+                <div>
+                    <h4 class="font-medium">Download Started</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Simulating download...</p>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.innerHTML = `
+                    <div class="mr-4 text-green-500">
+                        <i class="fas fa-check-circle text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium">Note: This is a simulation</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            To download real YouTube videos, use YouTube's features or third-party tools
+                        </p>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 4000);
+            }, 3000);
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search functionality
+            searchBtn.addEventListener('click', () => {
+                searchTerm = searchInput.value.trim();
+                filterVideos();
+            });
+            
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    searchTerm = searchInput.value.trim();
+                    filterVideos();
+                }
+            });
+            
+            // Category buttons
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    // Update active category and filter videos
+                    activeCategory = btn.dataset.category;
+                    filterVideos();
+                });
+            });
+            
+            // Featured video click
+            document.querySelector('.featured-thumbnail').addEventListener('click', () => {
+                showActionModal('rfscVS0vtbw', 'Learn Python - Full Course for Beginners');
+            });
+            
+            document.querySelector('#featured-video .play-btn').addEventListener('click', () => {
+                playVideo('rfscVS0vtbw', 'Learn Python - Full Course for Beginners');
+            });
+            
+            // Modal close button
+            closeModalBtn.addEventListener('click', () => {
+                videoModal.classList.add('hidden');
+                iframeContainer.innerHTML = '';
+            });
+            
+            // Action modal buttons
+            playBtn.addEventListener('click', () => {
+                // Find the video title
+                const video = videos.find(v => v.id === currentVideoId);
+                playVideo(currentVideoId, video ? video.title : 'Video');
+            });
+            
+            downloadBtn.addEventListener('click', () => {
+                simulateDownload(currentVideoId);
+            });
+            
+            cancelActionBtn.addEventListener('click', () => {
+                actionModal.classList.add('hidden');
+            });
+            
+            // Close modals when clicking outside
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    videoModal.classList.add('hidden');
+                    iframeContainer.innerHTML = '';
+                }
+            });
+            
+            actionModal.addEventListener('click', (e) => {
+                if (e.target === actionModal) {
+                    actionModal.classList.add('hidden');
+                }
+            });
+        }
+
+        // Initialize the app
+        function init() {
+            renderVideos();
+            setupEventListeners();
+        }
+
+        // Start the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
